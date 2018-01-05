@@ -12,7 +12,7 @@ import sys
 
 # Add extra layers on top of a "base" network (e.g. VGGNet or Inception).
 def AddExtraLayers(net, use_batchnorm=True, lr_mult=1):
-    use_relu = True
+    use_relu = True  # default true
 
     # Add additional convolutional layers.
     # 19 x 19
@@ -71,7 +71,7 @@ def AddExtraLayers(net, use_batchnorm=True, lr_mult=1):
 caffe_root = os.getcwd()
 
 # Set true if you want to start training right after generating all files.
-run_soon = True
+run_soon = False
 # Set true if you want to load from most recently saved snapshot.
 # Otherwise, we will load from the pretrain_model defined below.
 resume_training = True
@@ -224,7 +224,7 @@ test_transform_param = {
 
 # If true, use batch norm for all newly added layers.
 # Currently only the non batch norm version has been tested.
-use_batchnorm = False
+use_batchnorm = True # False (default)
 lr_mult = 1
 # Use different initial learning rate.
 if use_batchnorm:
@@ -450,9 +450,13 @@ net[name] = L.MultiBoxLoss(*mbox_layers, multibox_loss_param=multibox_loss_param
         loss_param=loss_param, include=dict(phase=caffe_pb2.Phase.Value('TRAIN')),
         propagate_down=[True, True, False, False])
 
-with open(train_net_file, 'w') as f:
-    print('name: "{}_train"'.format(model_name), file=f)
-    print(net.to_proto(), file=f)
+try:
+    with open(train_net_file, 'w') as f:
+        print('name: "{}_train"'.format(model_name), file=f)
+        print(net.to_proto(), file=f)
+except IOError:
+    print('Failed to create ' + train_net_file)
+
 shutil.copy(train_net_file, job_dir)
 
 # Create test net.
@@ -493,24 +497,30 @@ net.detection_eval = L.DetectionEvaluate(net.detection_out, net.label,
     detection_evaluate_param=det_eval_param,
     include=dict(phase=caffe_pb2.Phase.Value('TEST')))
 
-with open(test_net_file, 'w') as f:
-    print('name: "{}_test"'.format(model_name), file=f)
-    print(net.to_proto(), file=f)
+try:
+    with open(test_net_file, 'w') as f:
+        print('name: "{}_test"'.format(model_name), file=f)
+        print(net.to_proto(), file=f)
+except IOError:
+    print('Failed to open ' + test_net_file)
 shutil.copy(test_net_file, job_dir)
 
 # Create deploy net.
 # Remove the first and last layer from test net.
 deploy_net = net
-with open(deploy_net_file, 'w') as f:
-    net_param = deploy_net.to_proto()
-    # Remove the first (AnnotatedData) and last (DetectionEvaluate) layer from test net.
-    del net_param.layer[0]
-    del net_param.layer[-1]
-    net_param.name = '{}_deploy'.format(model_name)
-    net_param.input.extend(['data'])
-    net_param.input_shape.extend([
-        caffe_pb2.BlobShape(dim=[1, 3, resize_height, resize_width])])
-    print(net_param, file=f)
+try:
+    with open(deploy_net_file, 'w') as f:
+        net_param = deploy_net.to_proto()
+        # Remove the first (AnnotatedData) and last (DetectionEvaluate) layer from test net.
+        del net_param.layer[0]
+        del net_param.layer[-1]
+        net_param.name = '{}_deploy'.format(model_name)
+        net_param.input.extend(['data'])
+        net_param.input_shape.extend([
+            caffe_pb2.BlobShape(dim=[1, 3, resize_height, resize_width])])
+        print(net_param, file=f)
+except IOError:
+    print('Failed to open ' + deploy_net_file)
 shutil.copy(deploy_net_file, job_dir)
 
 # Create solver.
@@ -520,8 +530,12 @@ solver = caffe_pb2.SolverParameter(
         snapshot_prefix=snapshot_prefix,
         **solver_param)
 
-with open(solver_file, 'w') as f:
-    print(solver, file=f)
+try:
+    with open(solver_file, 'w') as f:
+        print(solver, file=f)
+except IOError:
+    print('Failed to open ' + solver_file )
+
 shutil.copy(solver_file, job_dir)
 
 max_iter = 0
@@ -553,16 +567,18 @@ if remove_old_models:
         os.remove("{}/{}".format(snapshot_dir, file))
 
 # Create job file.
-with open(job_file, 'w') as f:
-  f.write('cd {}\n'.format(caffe_root))
-  f.write('./build/tools/caffe train \\\n')
-  f.write('--solver="{}" \\\n'.format(solver_file))
-  f.write(train_src_param)
-  if solver_param['solver_mode'] == P.Solver.GPU:
-    f.write('--gpu {} 2>&1 | tee {}/{}.log\n'.format(gpus, job_dir, model_name))
-  else:
-    f.write('2>&1 | tee {}/{}.log\n'.format(job_dir, model_name))
-
+try:
+    with open(job_file, 'w') as f:
+      f.write('cd {}\n'.format(caffe_root))
+      f.write('./build/tools/caffe train \\\n')
+      f.write('--solver="{}" \\\n'.format(solver_file))
+      f.write(train_src_param)
+      if solver_param['solver_mode'] == P.Solver.GPU:
+        f.write('--gpu {} 2>&1 | tee {}/{}.log\n'.format(gpus, job_dir, model_name))
+      else:
+        f.write('2>&1 | tee {}/{}.log\n'.format(job_dir, model_name))
+except IOError:
+    print('Failed to open ' + job_file)
 # Copy the python script to job_dir.
 py_file = os.path.abspath(__file__)
 shutil.copy(py_file, job_dir)

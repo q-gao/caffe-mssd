@@ -1,3 +1,6 @@
+"""
+This script and tools/convert_annoset.cpp are only available with SSD
+"""
 import argparse
 import os
 import shutil

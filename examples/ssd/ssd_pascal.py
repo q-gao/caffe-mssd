@@ -71,7 +71,7 @@ def AddExtraLayers(net, use_batchnorm=True, lr_mult=1):
 caffe_root = os.getcwd()
 
 # Set true if you want to start training right after generating all files.
-run_soon = True
+run_soon = False #True
 # Set true if you want to load from most recently saved snapshot.
 # Otherwise, we will load from the pretrain_model defined below.
 resume_training = True

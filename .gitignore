@@ -101,3 +101,13 @@ MANIFEST-*
 jobs
 temp
 examples/*/*lmdb
+
+# build
+mybuild/
+lib*.so.*
+lib*.so
+
+# run results
+logs/
+*.log
+output/

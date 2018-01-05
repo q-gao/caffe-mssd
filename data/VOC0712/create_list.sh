@@ -1,8 +1,25 @@
 #!/bin/bash
+# This script takes the following inputs:
+#   $voc_root_dir/$name/$sub_dir/$dataset.txt (e.g., VOCdevkit/VOC2007/ImageSets/Main)
+#
+# and creates the following files:
+#   <script_folder>/$dataset.txt
+#   <script_folder>/test_name_size.txt if $dataset == 'test'
+#
+# An example line in $dataset.txt (note 'JPEGImages' and 'Annotatopms' are hard-coded):
+#  VOC2007/JPEGImages/000001.jpg VOC2007/Annotations/000001.xml
+#
+# NOTE:
+#  - if $dataset == 'trainval', <script_folder>/trainval.txt is shuffled!
 
-root_dir=$HOME/data/VOCdevkit/
+voc_root_dir=/local/mnt/workspace/qgao/VOCData/VOCdevkit/
 sub_dir=ImageSets/Main
+
+# gets the script's source file pathname, strips it to just the path portion, 
+# cds to that path, 
+# then uses pwd to return the (effectively) full path of the script
 bash_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 for dataset in trainval test
 do
   dst_file=$bash_dir/$dataset.txt
@@ -17,7 +34,7 @@ do
       continue
     fi
     echo "Create list for $name $dataset..."
-    dataset_file=$root_dir/$name/$sub_dir/$dataset.txt
+    dataset_file=$voc_root_dir/$name/$sub_dir/$dataset.txt
 
     img_file=$bash_dir/$dataset"_img.txt"
     cp $dataset_file $img_file
@@ -38,7 +55,7 @@ do
   # Generate image name and size infomation.
   if [ $dataset == "test" ]
   then
-    $bash_dir/../../build/tools/get_image_size $root_dir $dst_file $bash_dir/$dataset"_name_size.txt"
+    $bash_dir/../../build/tools/get_image_size $voc_root_dir $dst_file $bash_dir/$dataset"_name_size.txt"
   fi
 
   # Shuffle trainval file.

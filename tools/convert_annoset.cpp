@@ -161,6 +161,7 @@ int main(int argc, char** argv) {
           min_dim, max_dim, is_color, enc, datum);
     } else if (anno_type == "detection") {
       labelname = root_folder + boost::get<std::string>(lines[line_id].second);
+      // defined in src/caffe/util/io.cpp
       status = ReadRichImageToAnnotatedDatum(filename, labelname, resize_height,
           resize_width, min_dim, max_dim, is_color, enc, type, label_type,
           name_to_label, &anno_datum);
@@ -185,7 +186,7 @@ int main(int argc, char** argv) {
 
     // Put in db
     string out;
-    CHECK(anno_datum.SerializeToString(&out));
+    CHECK(anno_datum.SerializeToString(&out)); //anno_datum read from annotation file by ReadRichImageToAnnotatedDatum
     txn->Put(key_str, out);
 
     if (++count % 1000 == 0) {
