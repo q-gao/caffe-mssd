@@ -98,7 +98,7 @@ CURRENT
 MANIFEST-*
 
 # temporary directories
-jobs
+jobs/
 temp
 examples/*/*lmdb
 
@@ -110,4 +110,5 @@ lib*.so
 # run results
 logs/
 *.log
+*.mp4
 output/

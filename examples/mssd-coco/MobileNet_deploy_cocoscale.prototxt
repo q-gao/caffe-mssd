@@ -1,4 +1,4 @@
-name: "MobileNet_VOC0712_SSD_320x320_deploy"
+name: "MobileNet_VOC0712_SSD_cocoscale_320x320_deploy"
 layer {
   name: "input"
   type: "Input"
@@ -1919,8 +1919,8 @@ layer {
   bottom: "data"
   top: "conv4_1/sep_mbox_priorbox"
   prior_box_param {
-    min_size: 32.0
-    max_size: 64.0
+    min_size: 22.4
+    max_size: 48.0
     aspect_ratio: 2.0
     flip: true
     clip: false
@@ -2035,8 +2035,8 @@ layer {
   bottom: "data"
   top: "conv5_5/sep_mbox_priorbox"
   prior_box_param {
-    min_size: 64.0
-    max_size: 118.4
+    min_size: 48.0
+    max_size: 105.6
     aspect_ratio: 2.0
     aspect_ratio: 3.0
     flip: true
@@ -2152,8 +2152,8 @@ layer {
   bottom: "data"
   top: "conv6/sep_mbox_priorbox"
   prior_box_param {
-    min_size: 118.4
-    max_size: 172.8
+    min_size: 105.6
+    max_size: 163.2
     aspect_ratio: 2.0
     aspect_ratio: 3.0
     flip: true
@@ -2269,8 +2269,8 @@ layer {
   bottom: "data"
   top: "conv7_2_mbox_priorbox"
   prior_box_param {
-    min_size: 172.8
-    max_size: 227.2
+    min_size: 163.2
+    max_size: 220.8
     aspect_ratio: 2.0
     aspect_ratio: 3.0
     flip: true
@@ -2386,8 +2386,8 @@ layer {
   bottom: "data"
   top: "conv8_2_mbox_priorbox"
   prior_box_param {
-    min_size: 227.2
-    max_size: 281.6
+    min_size: 220.8
+    max_size: 278.4
     aspect_ratio: 2.0
     flip: true
     clip: false
@@ -2502,7 +2502,7 @@ layer {
   bottom: "data"
   top: "conv9_2_mbox_priorbox"
   prior_box_param {
-    min_size: 281.6
+    min_size: 278.4
     max_size: 336.0
     aspect_ratio: 2.0
     flip: true
@@ -2607,8 +2607,8 @@ layer {
       top_k: 400
     }
     save_output_param {
-      output_directory: "/home/bjiang/projects/ssd/training/MobileNet/MobileNet_VOC0712_SSD_320x320_training/results"
-      output_name_prefix: "comp4_det_test_"
+      output_directory: "/local/mnt/workspace/qgao/Github/caffe-ssd/ssd-test-results"
+      output_name_prefix: "ssd_test_"
       output_format: "VOC"
       label_map_file: "data/VOC0712/labelmap_voc.prototxt"
       name_size_file: "data/VOC0712/test_name_size.txt"
