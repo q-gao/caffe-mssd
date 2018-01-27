@@ -16,7 +16,7 @@ device_id: 0
 debug_info: false
 snapshot_after_train: true
 test_initialization: false
-average_loss: 10
+average_loss: 100
 iter_size: 1
 type: "SGD"
 eval_type: "detection"
