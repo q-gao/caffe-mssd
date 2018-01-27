@@ -177,6 +177,7 @@ def main(args):
     return 0
 
 if __name__ == '__main__':
+    #NOTE: muse leave a space at the end of string
     arg_str=\
         "--solver examples/mssd-coco/train_solver_coco_for_script.prototxt " \
         "--gpu_num 8 " \
@@ -186,7 +187,7 @@ if __name__ == '__main__':
         "--iter_size 1 " \
         "--batch_size_per_gpu 16 " \
         "--base_learning_rate 0.004 " \
-        "--learning_rate_adj_iter 100000 200000 300000"\
+        "--learning_rate_adj_iter 100000 200000 300000 "\
         "--result_file_name_prefix examples/mssd-coco/logs/MSSD_COCO95K " \
         "--training_lmdb_location examples/COCO/trainl2014_valminusminival2014_lmdb"
         #"--model_weights_file examples/mssd-coco/MobileNet_SSD_320x320_COCO_LR1E-3_2_iter_18000.caffemodel " \        
