@@ -180,6 +180,7 @@ if __name__ == '__main__':
     #NOTE: muse leave a space at the end of string
     arg_str=\
         "--solver examples/mssd-coco/train_solver_coco_for_script.prototxt " \
+        "--model_weights_file examples/mssd-coco/models/mobilenet.caffemodel "\
         "--gpu_num 8 " \
         "--max_iter 200000 "\
         "--test_interval 5000 " \
