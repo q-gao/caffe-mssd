@@ -10,7 +10,7 @@ import sys
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format
 
-if __name__ == "__main__":
+def create_argparser():
   parser = argparse.ArgumentParser(description="Create AnnotatedDatum database")
   parser.add_argument("root",
       help="The root directory which contains the images and annotations.")
@@ -51,7 +51,9 @@ if __name__ == "__main__":
   parser.add_argument("--check-label", default = False, action = "store_true",
       help="Check that there is no duplicated name/label.")
 
-  args = parser.parse_args()
+  return parser
+
+def main(args):
   root_dir = args.root
   list_file = args.listfile
   out_dir = args.outdir
@@ -168,3 +170,9 @@ if __name__ == "__main__":
   if os.path.exists(link_dir):
     os.unlink(link_dir)
   os.symlink(out_dir, link_dir)
+
+if __name__ == "__main__":
+  parser = create_argparser()
+  args = parser.parse_args()
+  main(args)
+
