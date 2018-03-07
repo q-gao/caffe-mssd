@@ -49,6 +49,8 @@ def CreateArgumentParser():
 
     ap.add_argument("-w", "--model_weights_file", default=None,
                     help="initialization model weights")
+    ap.add_argument("--snapshot_file", default=None,
+                    help="snapshot file")    
     ap.add_argument("-r", "--base_learning_rate", type=float, default='0.001',
                     help="base learning rate")
     ap.add_argument("-a", "--learning_rate_adj_iter", type=int, nargs='+', default="None",
@@ -154,6 +156,8 @@ def main(args):
                    "-gpu {} ".format(args.solver, gpu_id_str)
     if args.model_weights_file is not None:
         training_cmd += '-weights {} '.format(args.model_weights_file)
+    if args.snapshot_file is not None:
+        training_cmd += '-snapshot {} '.format(args.snapshot_file)
 
     log_file_name = args.result_file_name_prefix + GetCurHumanReadableTime() + '.log'
 
@@ -178,19 +182,24 @@ def main(args):
 
 if __name__ == '__main__':
     #NOTE: muse leave a space at the end of string
+    #"--snapshot_file <snapshot>"
+    #"--solver examples/mssd-coco/train_solver_coco_msra_for_script.prototxt " \    
+    #"--model_weights_file examples/mssd-coco/models/mobilenet.caffemodel "\
     arg_str=\
         "--solver examples/mssd-coco/train_solver_coco_for_script.prototxt " \
-        "--model_weights_file examples/mssd-coco/models/mobilenet.caffemodel "\
-        "--gpu_num 8 " \
-        "--max_iter 200000 "\
-        "--test_interval 5000 " \
-        "--snapshot_interval 5000 " \
-        "--iter_size 1 " \
+        "--model_weights_file examples/mssd-coco/models/MSSD_COCO95K_iter_195000.caffemodel " \
+        "--gpu_num 1 " \
+        "--max_iter 150000 "\
+        "--test_interval 2500 " \
+        "--snapshot_interval 2500 " \
+        "--iter_size 8 " \
         "--batch_size_per_gpu 16 " \
-        "--base_learning_rate 0.004 " \
-        "--learning_rate_adj_iter 100000 200000 300000 "\
-        "--result_file_name_prefix examples/mssd-coco/logs/MSSD_COCO95K " \
-        "--training_lmdb_location examples/COCO/trainl2014_valminusminival2014_lmdb"
+        "--base_learning_rate 0.0002 " \
+        "--learning_rate_adj_iter 50000 100000 150000 "\
+        "--result_file_name_prefix examples/mssd-coco/logs/MSSD_COCO95K_VOC " \
+        "--training_lmdb_location examples/VOC0712/VOC0712_trainval_lmdb " 
+        #"--training_lmdb_location examples/COCO/trainl2014_valminusminival2014_lmdb"
+
         #"--model_weights_file examples/mssd-coco/MobileNet_SSD_320x320_COCO_LR1E-3_2_iter_18000.caffemodel " \        
 
     import shlex
